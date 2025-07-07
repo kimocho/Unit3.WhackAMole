@@ -1,19 +1,17 @@
 import { createContext, useContext, useState } from 'react';
-import hole from '../public/hole.png';
 
 const GameContext = createContext();
 
 export const GameProvider = ({ children }) => {
   const [game, setGame] = useState([]);
+  const [count, setCount] = useState(0);
   const startGame = () => {
-    setGame([hole, hole, hole,
-      hole, hole, hole,
-      hole, hole, hole]);
+    setGame([<li key={game} className="hole"></li>]);
   }
-  const scoreIncrease = (count) => {
-    return count + 1;
+  const scoreIncrease = () => {
+    setCount(count + 1);
   }
-  const value = { game, scoreIncrease, startGame };
+  const value = { count, game, scoreIncrease, startGame };
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>
 }
 
