@@ -1,15 +1,31 @@
-// import { useGame } from './GameContext.jsx';
-// import HighScores from './HighScores.jsx';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 const App = () => {
   const [bool, setBool] = useState(true);
   const [score, setScore] = useState(0);
   const [time, setTime] = useState(15);
   const [highScore, setHighScore] = useState([]);
-  const [randomMole, setRandomMole] = useState(Math.floor(Math.random() * 9) + 1);
-  // const { startGame } = useGame();
-  // console.log(startGame);
+  const items = ['hole1', 'hole2', 'hole3', 'hole4', 'hole5', 'hole6', 'hole7', 'hole8', 'hole9'];
+  const randomIndex = Math.floor(Math.random() * 9);
+  const arrayToBeMapped = highScore.sort((a, b) => b - a).slice(0, 5);
+  const intervalRef = useRef(null);
+
+  useEffect(() => {
+    intervalRef.current = setInterval(() => {
+      setTime(time => {
+        if (time < 1) {
+          clearInterval(intervalRef.current);
+          setBool(true);
+          return 0;
+        }
+        return time - 1;
+      })
+      // setTime(time => time - 1);
+    }, 1000);
+
+    return () => clearInterval(intervalRef.current);
+  }, [bool]);
+
   return (
     <>
       <h1>Whack a Mole</h1>
@@ -19,32 +35,35 @@ const App = () => {
             <p>Welcome to Whack a Mole!</p>
             <p>Whack a mole to earn points!</p>
             <p>How many can you get?</p>
-            <button onClick={() => setBool(false)}>Play</button>
+            <button onClick={() => { setScore(0); setBool(false); setTime(15); }}>Play</button>
             <h1>High Scores</h1>
-            <p>None yet... Play the game!</p>
+            {highScore.length ?
+              <>
+                {arrayToBeMapped.map((elem, index) => <p key={index}>{elem}</p>)}
+              </>
+              :
+              <p>None yet... Play the game!</p>
+            }
           </section>
           :
           <section>
             <nav>
               <p className="score">Score: {score}</p>
               <p className="score">Time: {time}</p>
-              <button id="restart" onClick={() => setBool(true)}>Restart</button>
+              <button id="restart" onClick={() => {
+                setBool(true);
+                setHighScore([...highScore, score]);
+              }}>Restart</button>
             </nav>
             <ul>
-              <li className="hole"></li>
-              <li className="hole mole"></li>
-              <li className="hole"></li>
-              <li className="hole"></li>
-              <li className="hole"></li>
-              <li className="hole"></li>
-              <li className="hole"></li>
-              <li className="hole"></li>
-              <li className="hole"></li>
+              {
+                items.map((item, index) => (
+                  <li key={index} className={index === randomIndex ? 'hole mole' : 'hole'} onClick={index === randomIndex ? () => setScore(score + 1) : null}></li>
+                ))
+              }
             </ul>
           </section >
       }
-
-      {/* <HighScores /> */}
     </>
   )
 }
