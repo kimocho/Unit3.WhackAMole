@@ -5,7 +5,7 @@ const App = () => {
   const [score, setScore] = useState(0);
   const [time, setTime] = useState(15);
   const [highScore, setHighScore] = useState([]);
-  const items = ['hole1', 'hole2', 'hole3', 'hole4', 'hole5', 'hole6', 'hole7', 'hole8', 'hole9'];
+  const items = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
   const randomIndex = Math.floor(Math.random() * 9);
   const arrayToBeMapped = highScore.sort((a, b) => b - a).slice(0, 5);
   const intervalRef = useRef(null);
@@ -20,7 +20,6 @@ const App = () => {
         }
         return time - 1;
       })
-      // setTime(time => time - 1);
     }, 1000);
 
     return () => clearInterval(intervalRef.current);
